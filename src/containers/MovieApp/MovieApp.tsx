@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Movie from "../../components/Movie/Movie.tsx";
 
 interface MovieProps {
@@ -7,8 +7,16 @@ interface MovieProps {
 }
 
 const MovieApp = () => {
-    const [movies, setMovies] = useState<MovieProps[]>([]);
+    const [movies, setMovies] = useState<MovieProps[]>(() => {
+        const savedMovies = localStorage.getItem('movies');
+        return savedMovies ? JSON.parse(savedMovies) : [];
+    });
+
     const [newTitle, setNewTitle] = useState<string>('');
+
+    useEffect(() => {
+        localStorage.setItem('movies', JSON.stringify(movies));
+    }, [movies]);
 
     const addMovie = (e: React.FormEvent) => {
         e.preventDefault();
